@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAC Foods - Meal Attendance</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    color: #1a202c;
+}
+
+/* Animated Background */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: float 8s ease-in-out infinite;
+}
+
+.shape1 { top: 20%; left: 10%; animation-delay: 0s; }
+.shape2 { top: 60%; left: 80%; animation-delay: 2s; }
+.shape3 { top: 80%; left: 20%; animation-delay: 4s; }
+.shape4 { top: 30%; left: 70%; animation-delay: 1s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(180deg); }
+}
+
+/* Header */
+.header {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid #e2e8f0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a202c;
+    text-decoration: none;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: #4a5568;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 8px;
+}
+
+.nav-links a:hover {
+    color: #667eea;
+    background: #f7fafc;
+    transform: translateY(-2px);
+}
+
+.admin-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px;
+}
+
+.app-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 50px;
+    text-align: center;
+    max-width: 550px;
+    width: 100%;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.app-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.app-subtitle {
+    font-size: 18px;
+    color: #4a5568;
+    margin-bottom: 40px;
+    font-weight: 500;
+}
+
+.camera-container {
+    background: #f8fafc;
+    border: 3px dashed #cbd5e0;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+#video, #register-video {
+    width: 100%;
+    max-width: 320px;
+    height: 220px;
+    border-radius: 15px;
+    background: #2d3748;
+    object-fit: cover;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+#canvas, #register-canvas {
+    display: none;
+}
+
+.scan-icon {
+    font-size: 72px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+.scan-text {
+    font-size: 18px;
+    color: #2d3748;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 16px 32px;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: white;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-message {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 15px;
+    font-weight: 700;
+    display: none;
+    font-size: 16px;
+}
+
+.success {
+    background: #f0fff4;
+    color: #22543d;
+    border: 2px solid #9ae6b4;
+}
+
+.error {
+    background: #fed7d7;
+    color: #c53030;
+    border: 2px solid #fc8181;
+}
+
+.footer {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px 30px;
+    border-radius: 50px;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.attendance-count {
+    color: #1a202c;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    backdrop-filter: blur(20px);
+    padding: 50px;
+    border-radius: 24px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal input {
+    width: 100%;
+    padding: 18px;
+    margin: 12px 0;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1a202c;
+}
+
+.modal input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal h2 {
+    color: #1a202c;
+    font-weight: 800;
+    margin-bottom: 30px;
+}
+
+/* Admin Page Styles */
+.admin-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 50px;
+    max-width: 900px;
+    width: 100%;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: #f8fafc;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: 42px;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-label {
+    color: #4a5568;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.user-list {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 25px;
+    max-height: 350px;
+    overflow-y: auto;
+    border: 2px solid #e2e8f0;
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #1a202c;
+    font-weight: 500;
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.delete-btn {
+    background: #f56565;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background: #e53e3e;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 15px 20px;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .app-card, .admin-card {
+        margin: 20px;
+        padding: 30px 25px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Additional styling for dashboard */
+#dashboard-page .app-card > div {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    margin: 25px 0;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+#dashboard-page h2 {
+    color: black !important;
+    font-size: 64px !important;
+    margin-bottom: 15px !important;
+    font-weight: 800 !important;
+}
+
+#dashboard-page p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 18px;
+    font-weight: 500;
+}
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-shapes shape1"></div>
+        <div class="floating-shapes shape2"></div>
+        <div class="floating-shapes shape3"></div>
+        <div class="floating-shapes shape4"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <a href="#" class="logo">UAC FOODS</a>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('register')">Register</a></li>
+                <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+            </ul>
+        </nav>
+        <button class="admin-btn" onclick="showAdmin()">Admin Login</button>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Home Page -->
+        <div id="home-page" class="app-card">
+            <h1 class="app-title">Face Recognition</h1>
+            <p class="app-subtitle">Meal Attendance System</p>
+            
+            <div class="camera-container">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+                <div id="camera-placeholder">
+                    <div class="scan-icon">📷</div>
+                    <p class="scan-text">Click "Start Camera" to begin face scanning</p>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="startCamera()" id="start-camera-btn">Start Camera</button>
+                <button class="btn btn-primary" onclick="captureAndVerify()" id="scan-btn" style="display: none;">Scan Face</button>
+                <button class="btn btn-secondary" onclick="showPage('register')">Register Face</button>
+            </div>
+            
+            <div id="status-message" class="status-message"></div>
+        </div>
+
+        <!-- Registration Page -->
+<div id="register-page" class="app-card" style="display: none;">
+    <h1 class="app-title">Register Your Face</h1>
+    <p class="app-subtitle">First time? Let's register your face</p>
+    
+    <!-- Add name input field -->
+    <div style="margin-bottom: 30px;">
+        <input type="text" id="user-name" placeholder="Enter your full name" 
+               style="width: 100%; padding: 18px; margin: 12px 0; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; font-weight: 500; color: #1a202c;">
+    </div>
+    
+    <div class="camera-container">
+        <video id="register-video" autoplay playsinline></video>
+        <canvas id="register-canvas"></canvas>
+        <div id="register-camera-placeholder">
+            <div class="scan-icon">👤</div>
+            <p class="scan-text">Enter your name, then click "Start Camera"</p>
+        </div>
+    </div>
+    
+    <div class="action-buttons">
+        <button class="btn btn-primary" onclick="startRegisterCamera()" id="start-register-camera-btn">Start Camera</button>
+        <button class="btn btn-primary" onclick="registerFace()" id="register-btn" style="display: none;">Capture & Register</button>
+        <button class="btn btn-secondary" onclick="showPage('home')">Back to Scan</button>
+    </div>
+    
+    <div id="register-status" class="status-message"></div>
+</div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="app-card" style="display: none;">
+            <h1 class="app-title">Dashboard</h1>
+            <p class="app-subtitle">Today's Meal Attendance</p>
+            
+            <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 20px 0;">
+                <h2 style="color: white; font-size: 48px; margin-bottom: 10px;" id="daily-count">0</h2>
+                <p style="color: rgba(255,255,255,0.8);">People served today</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="showPage('home')">Back to Home</button>
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="admin-page" class="admin-card" style="display: none;">
+            <div class="admin-header">
+                <h1 class="app-title">Admin Dashboard</h1>
+                <button class="btn btn-secondary" onclick="showPage('home')">Logout</button>
+            </div>
+            
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-users">0</div>
+                    <div class="stat-label">Registered Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="today-attendance">0</div>
+                    <div class="stat-label">Today's Attendance</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-scans">0</div>
+                    <div class="stat-label">Total Scans</div>
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: white; margin-bottom: 15px;">Actions</h3>
+                <div class="action-buttons" style="justify-content: flex-start; gap: 10px;">
+                    <button class="btn btn-primary" onclick="downloadDailyReport()">Download Daily Report</button>
+                    <button class="btn btn-primary" onclick="downloadWeeklyReport()">Download Weekly Report</button>
+                    <button class="btn btn-secondary" onclick="resetDailyCount()">Reset Daily Count</button>
+                </div>
+            </div>
+            
+            <div>
+                <h3 style="color: white; margin-bottom: 15px;">Registered Users</h3>
+                <div class="user-list" id="user-list">
+                    <div style="color: rgba(255,255,255,0.6); text-align: center; padding: 20px;">
+                        No users registered yet
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="attendance-count">Today: <span id="count">0</span> served</div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px; color: #333;">Admin Login</h2>
+            <input type="text" id="admin-username" placeholder="Username" />
+            <input type="password" id="admin-password" placeholder="Password" />
+            <div style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="adminLogin()">Login</button>
+                <button class="btn btn-secondary" onclick="closeModal()" style="margin-left: 10px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // In-memory storage (simulating a database)
+        let userData = {};
+        let dailyScans = new Set();
+        let attendanceCount = 0;
+        let totalScans = 0;
+        let currentDate = new Date().toDateString();
+        let currentStream = null;
+
+        // Initialize app
+        function initApp() {
+            updateCountDisplay();
+            // Reset daily data if new day
+            const today = new Date().toDateString();
+            if (currentDate !== today) {
+                dailyScans.clear();
+                attendanceCount = 0;
+                currentDate = today;
+                updateCountDisplay();
+            }
+        }
+
+        // Page navigation
+        function showPage(page) {
+            // Stop any active camera streams
+            stopCamera();
+            
+            document.querySelectorAll('.app-card, .admin-card').forEach(card => {
+                card.style.display = 'none';
+            });
+            document.getElementById(page + '-page').style.display = 'block';
+            
+            if (page === 'dashboard') {
+                document.getElementById('daily-count').textContent = attendanceCount;
+            } else if (page === 'admin') {
+                updateAdminStats();
+            }
+        }
+
+        // Camera functions
+        async function startCamera() {
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 300, 
+                        height: 200,
+                        facingMode: 'user'
+                    } 
+                });
+                
+                const video = document.getElementById('video');
+                const placeholder = document.getElementById('camera-placeholder');
+                
+                video.srcObject = currentStream;
+                video.style.display = 'block';
+                placeholder.style.display = 'none';
+                
+                document.getElementById('start-camera-btn').style.display = 'none';
+                document.getElementById('scan-btn').style.display = 'inline-block';
+                
+                showStatus('Camera started! Position your face and click "Scan Face"', 'success');
+            } catch (error) {
+                showStatus('Camera access denied. Please allow camera permissions.', 'error');
+                console.error('Camera error:', error);
+            }
+        }
+
+        async function startRegisterCamera() {
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: 300, 
+                        height: 200,
+                        facingMode: 'user'
+                    } 
+                });
+                
+                const video = document.getElementById('register-video');
+                const placeholder = document.getElementById('register-camera-placeholder');
+                
+                video.srcObject = currentStream;
+                video.style.display = 'block';
+                placeholder.style.display = 'none';
+                
+                document.getElementById('start-register-camera-btn').style.display = 'none';
+                document.getElementById('register-btn').style.display = 'inline-block';
+                
+                showRegisterStatus('Camera started! Position your face and click "Capture & Register"', 'success');
+            } catch (error) {
+                showRegisterStatus('Camera access denied. Please allow camera permissions.', 'error');
+                console.error('Camera error:', error);
+            }
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            
+            // Reset camera displays
+            const videos = document.querySelectorAll('video');
+            const placeholders = document.querySelectorAll('[id$="-camera-placeholder"]');
+            
+            videos.forEach(video => {
+                video.style.display = 'none';
+                video.srcObject = null;
+            });
+            
+            placeholders.forEach(placeholder => {
+                placeholder.style.display = 'block';
+            });
+            
+            // Reset buttons
+            document.getElementById('start-camera-btn').style.display = 'inline-block';
+            document.getElementById('scan-btn').style.display = 'none';
+            document.getElementById('start-register-camera-btn').style.display = 'inline-block';
+            document.getElementById('register-btn').style.display = 'none';
+        }
+
+        function captureImage(videoId, canvasId) {
+            const video = document.getElementById(videoId);
+            const canvas = document.getElementById(canvasId);
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            return canvas.toDataURL('image/jpeg', 0.8);
+        }
+
+        // Face registration
+        function registerFace() {
+    const video = document.getElementById('register-video');
+    const userName = document.getElementById('user-name').value.trim();
+    
+    if (!userName) {
+        showRegisterStatus('Please enter your full name first!', 'error');
+        return;
+    }
+    
+    if (!video.srcObject) {
+        showRegisterStatus('Please start the camera first!', 'error');
+        return;
+    }
+    
+    showRegisterStatus('Capturing your face...', '');
+    
+    setTimeout(() => {
+        const imageData = captureImage('register-video', 'register-canvas');
+        const userId = 'user_' + Date.now();
+        
+        userData[userId] = {
+            id: userId,
+            registeredAt: new Date().toISOString(),
+            faceData: imageData,
+            name: userName
+        };
+        
+        showRegisterStatus(`Face registered successfully for ${userName}! You can now use the scanner.`, 'success');
+        stopCamera();
+        
+        // Clear the name input
+        document.getElementById('user-name').value = '';
+        
+        setTimeout(() => {
+            showPage('home');
+        }, 2000);
+    }, 1500);
+}
+
+        // Face scanning and verification
+        function captureAndVerify() {
+    const video = document.getElementById('video');
+    
+    if (!video.srcObject) {
+        showStatus('Please start the camera first!', 'error');
+        return;
+    }
+    
+    showStatus('Scanning face...', '');
+    
+    setTimeout(() => {
+        const imageData = captureImage('video', 'canvas');
+        
+        // Check if any users are registered
+        const userIds = Object.keys(userData);
+        
+        if (userIds.length === 0) {
+            showStatus('No registered users found. Please register first!', 'error');
+            stopCamera();
+            return;
+        }
+        
+        // Simulate face recognition with 70% chance of finding a match for registered users
+        // and 30% chance of not recognizing the face (simulating unregistered user)
+        const recognitionSuccess = Math.random() > 0.3; // 70% success rate
+        
+        if (!recognitionSuccess) {
+            // Face not recognized - likely unregistered user
+            showStatus('You are not registered, please register your face', 'error');
+            playAlertSound();
+            stopCamera();
+            return;
+        }
+        
+        // Face recognized - proceed with existing logic
+        const matchedUserId = userIds[Math.floor(Math.random() * userIds.length)];
+        
+        // Check if user has already scanned today
+        if (dailyScans.has(matchedUserId)) {
+            showStatus('Face Scanned already, Please come back tomorrow', 'error');
+            playAlertSound();
+        } else {
+            // Successful scan
+            dailyScans.add(matchedUserId);
+            attendanceCount++;
+            totalScans++;
+            updateCountDisplay();
+            
+            const userName = userData[matchedUserId].name;
+            showStatus(`SCANNING COMPLETE, Welcome ${userName}! PROCEED TO GET YOUR FOOD`, 'success');
+        }
+        
+        stopCamera();
+    }, 2000);
+}
+
+        // Status message functions
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = 'block';
+            
+            if (type === 'success') {
+                statusDiv.style.fontSize = '18px';
+                statusDiv.style.fontWeight = 'bold';
+            }
+        }
+
+        function showRegisterStatus(message, type) {
+            const statusDiv = document.getElementById('register-status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        // Update count display
+        function updateCountDisplay() {
+            document.getElementById('count').textContent = attendanceCount;
+            document.getElementById('daily-count').textContent = attendanceCount;
+        }
+
+        // Admin functions
+        function showAdmin() {
+            document.getElementById('admin-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('admin-modal').style.display = 'none';
+            document.getElementById('admin-username').value = '';
+            document.getElementById('admin-password').value = '';
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            
+            if (username === 'admin123' && password === 'uacfoodsng') {
+                closeModal();
+                showPage('admin');
+            } else {
+                alert('Invalid credentials!');
+            }
+        }
+
+        function updateAdminStats() {
+            document.getElementById('total-users').textContent = Object.keys(userData).length;
+            document.getElementById('today-attendance').textContent = attendanceCount;
+            document.getElementById('total-scans').textContent = totalScans;
+            
+            updateUserList();
+        }
+
+        function updateUserList() {
+            const userList = document.getElementById('user-list');
+            const users = Object.values(userData);
+            
+            if (users.length === 0) {
+                userList.innerHTML = '<div style="color: rgba(255,255,255,0.6); text-align: center; padding: 20px;">No users registered yet</div>';
+                return;
+            }
+            
+            userList.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div>
+                        <strong>${user.name}</strong><br>
+                        <small>Registered: ${new Date(user.registeredAt).toLocaleDateString()}</small>
+                    </div>
+                    <button class="delete-btn" onclick="deleteUser('${user.id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                delete userData[userId];
+                dailyScans.delete(userId);
+                updateAdminStats();
+            }
+        }
+
+        function resetDailyCount() {
+            if (confirm('Are you sure you want to reset today\'s attendance count?')) {
+                dailyScans.clear();
+                attendanceCount = 0;
+                updateCountDisplay();
+                updateAdminStats();
+            }
+        }
+
+
+        function createExcelFile(data, filename) {
+    // Create CSV content (Excel can open CSV files)
+    let csvContent = '';
+    
+    if (filename.includes('daily')) {
+        csvContent = 'Date,Total Attendance,User ID,User Name,Registration Date\n';
+        csvContent += `${data.date},${data.totalAttendance},,\n`;
+        data.scannedUsers.forEach(user => {
+            csvContent += `,,${user.id},${user.name},${new Date(user.registeredAt).toLocaleDateString()}\n`;
+        });
+    } else {
+        csvContent = 'Report Type,Weekly Summary\n';
+        csvContent += `Week Of,${data.weekOf}\n`;
+        csvContent += `Total Users,${data.totalUsers}\n`;
+        csvContent += `Total Scans,${data.totalScans}\n`;
+        csvContent += `Daily Attendance,${data.dailyAttendance}\n\n`;
+        csvContent += 'User ID,Name,Registration Date\n';
+        data.registeredUsers.forEach(user => {
+            csvContent += `${user.id},${user.name},${new Date(user.registeredAt).toLocaleDateString()}\n`;
+        });
+    }
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+        function downloadDailyReport() {
+    const today = new Date().toDateString();
+    const reportData = {
+        date: today,
+        totalAttendance: attendanceCount,
+        scannedUsers: Array.from(dailyScans).map(userId => ({
+            id: userId,
+            name: userData[userId]?.name || 'Unknown User',
+            registeredAt: userData[userId]?.registeredAt || 'Unknown'
+        }))
+    };
+    
+    const filename = `daily_report_${today.replace(/\s/g, '_')}.csv`;
+    createExcelFile(reportData, filename);
+}
+
+       function downloadWeeklyReport() {
+    const weekData = {
+        weekOf: new Date().toDateString(),
+        totalUsers: Object.keys(userData).length,
+        totalScans: totalScans,
+        dailyAttendance: attendanceCount,
+        registeredUsers: Object.values(userData)
+    };
+    
+    const filename = `weekly_report_${new Date().toISOString().slice(0,10)}.csv`;
+    createExcelFile(weekData, filename);
+}
+
+        // Sound alert function
+        function playAlertSound() {
+            // Create audio context for beep sound
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800; // Frequency in Hz
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (error) {
+                console.log('Audio not supported');
+            }
+        }
+
+        // Clean up camera on page unload
+        window.addEventListener('beforeunload', () => {
+            stopCamera();
+        });
+
+        // Initialize app when page loads
+        window.addEventListener('load', () => {
+            initApp();
+        });
+    </script>
+</body>
+</html>
